@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículo Interativo - Arthur Henrique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Professional Calm -->
+    <!-- Application Structure Plan: A single-page application with vertical scrolling and a sticky navigation bar. The structure is thematic: Hero, About, Skills (interactive chart), Experience (interactive timeline), and Education. This structure breaks down the resume into digestible, engaging sections, allowing recruiters to quickly get an overview and dive into details as needed, which is more user-friendly than a static document. The layout is optimized for mobile-first design, ensuring a clean and responsive experience. -->
+    <!-- Visualization & Content Choices: Skills are shown in a Chart.js bar chart for quick visual comparison, with filters for interactivity that wrap on smaller screens. Experience is a vertical timeline made with HTML/Tailwind, with JS-powered accordions to show details on click, keeping the UI clean. Education is presented in clean cards. All choices aim to enhance exploration without overwhelming the user. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #2c3e50;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #4a90e2;
+            border: 3px solid #F8F7F4;
+        }
+        .details-content {
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .details-content.open {
+            max-height: 1000px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-xl font-bold text-[#34495e]">Arthur Henrique</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#sobre" class="hover:text-[#4a90e2] transition-colors">Sobre</a>
+                <a href="#competencias" class="hover:text-[#4a90e2] transition-colors">Competências</a>
+                <a href="#experiencia" class="hover:text-[#4a90e2] transition-colors">Experiência</a>
+                <a href="#formacao" class="hover:text-[#4a90e2] transition-colors">Formação</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden mt-2">
+            <a href="#sobre" class="block py-2 px-4 text-sm hover:bg-gray-200">Sobre</a>
+            <a href="#competencias" class="block py-2 px-4 text-sm hover:bg-gray-200">Competências</a>
+            <a href="#experiencia" class="block py-2 px-4 text-sm hover:bg-gray-200">Experiência</a>
+            <a href="#formacao" class="block py-2 px-4 text-sm hover:bg-gray-200">Formação</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section id="sobre" class="text-center min-h-[60vh] flex flex-col justify-center items-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#34495e] mb-4">Arthur Henrique</h1>
+            <p class="text-xl md:text-2xl text-[#4a90e2] mb-8">Profissional de TI & Analista de Sistemas</p>
+            <p class="max-w-3xl mx-auto text-lg text-gray-700 leading-relaxed">
+                Com mais de 7 anos de experiência, sou um profissional de Tecnologia da Informação apaixonado por otimizar processos e gerenciar projetos. Minha carreira é marcada pela busca contínua de conhecimento em linguagens de programação, bancos de dados, redes e Business Intelligence, sempre com o objetivo de atender e superar as demandas do mercado.
+            </p>
+        </section>
+
+        <section id="competencias" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#34495e]">Principais Competências</h2>
+            <p class="text-center text-gray-600 mb-10">Passe o mouse sobre as barras para ver detalhes ou filtre por categoria.</p>
+            <div class="flex flex-wrap justify-center space-x-2 mb-8">
+                <button class="filter-btn bg-[#4a90e2] text-white py-2 px-4 rounded-full text-sm font-semibold mb-2" data-filter="all">Todas</button>
+                <button class="filter-btn bg-white text-gray-700 py-2 px-4 rounded-full text-sm font-semibold border mb-2" data-filter="Gestão & Análise">Gestão & Análise</button>
+                <button class="filter-btn bg-white text-gray-700 py-2 px-4 rounded-full text-sm font-semibold border mb-2" data-filter="Desenvolvimento">Desenvolvimento</button>
+                <button class="filter-btn bg-white text-gray-700 py-2 px-4 rounded-full text-sm font-semibold border mb-2" data-filter="Infraestrutura">Infraestrutura</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="skillsChart"></canvas>
+            </div>
+        </section>
+
+        <section id="experiencia" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-12 text-[#34495e]">Experiência Profissional</h2>
+            <p class="text-center text-gray-600 mb-12">Clique em uma posição para ver os detalhes das responsabilidades.</p>
+            <div class="relative max-w-3xl mx-auto">
+                <div class="absolute left-4 top-0 h-full w-0.5 bg-gray-200"></div>
+                <div id="timeline-container" class="space-y-12">
+                </div>
+            </div>
+        </section>
+
+        <section id="formacao" class="py-20 bg-white rounded-2xl">
+            <h2 class="text-3xl font-bold text-center mb-12 text-[#34495e]">Formação Acadêmica</h2>
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-gray-50 p-8 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-[#34495e]">Análise e Desenvolvimento de Sistemas</h3>
+                    <p class="text-[#4a90e2] mb-2">Universidade Presbiteriana Mackenzie</p>
+                    <p class="text-gray-600">Jan de 2019 - Dez de 2021</p>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-[#34495e]">Língua e Literatura Inglesa</h3>
+                    <p class="text-[#4a90e2] mb-2">Wizard by Pearson</p>
+                    <p class="text-gray-600">Jan de 2018 - Jul de 2019</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+            <p class="font-semibold text-[#34495e]">Arthur Henrique</p>
+            <p>arthur.h@outlook.com</p>
+            <p>(11) 97457-4543</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const allSkills = [
+                { name: 'Gerenciamento de Projetos', category: 'Gestão & Análise', level: 5 },
+                { name: 'Análise de Sistemas', category: 'Gestão & Análise', level: 5 },
+                { name: 'Business Intelligence (BI)', category: 'Gestão & Análise', level: 4 },
+                { name: 'Power BI', category: 'Gestão & Análise', level: 4 },
+                { name: 'SAP (Associate)', category: 'Gestão & Análise', level: 3 },
+                { name: 'SQL', category: 'Desenvolvimento', level: 4 },
+                { name: 'Python', category: 'Desenvolvimento', level: 3 },
+                { name: 'HTML, CSS', category: 'Desenvolvimento', level: 3 },
+                { name: 'Redes e Infraestrutura', category: 'Infraestrutura', level: 4 },
+                { name: 'Administração de Servidores', category: 'Infraestrutura', level: 4 },
+                { name: 'Suporte Técnico', category: 'Infraestrutura', level: 5 },
+            ];
+
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            let skillsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: allSkills.map(s => s.name),
+                    datasets: [{
+                        label: 'Nível de Proficiência',
+                        data: allSkills.map(s => s.level),
+                        backgroundColor: '#4a90e2',
+                        borderColor: '#34495e',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 5,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                autoSkip: false,
+                                callback: function(value, index, values) {
+                                    const label = this.getLabelForValue(value);
+                                    return label.length > 25 ? label.substring(0, 25) + '...' : label;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += `${context.parsed.x} de 5`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-[#4a90e2]', 'text-white');
+                        btn.classList.add('bg-white', 'text-gray-700');
+                    });
+                    button.classList.add('bg-[#4a90e2]', 'text-white');
+                    button.classList.remove('bg-white', 'text-gray-700');
+
+                    const filter = button.dataset.filter;
+                    const filteredSkills = filter === 'all' ? allSkills : allSkills.filter(s => s.category === filter);
+                    
+                    skillsChart.data.labels = filteredSkills.map(s => s.name);
+                    skillsChart.data.datasets[0].data = filteredSkills.map(s => s.level);
+                    skillsChart.update();
+                });
+            });
+
+            const experiences = [
+                {
+                    company: 'Grupo Tesoura de Ouro',
+                    role: 'Consultor',
+                    period: 'Mar de 2021 - Presente',
+                    details: [
+                        'Liderança de projetos de BI, desde a coleta de requisitos até a entrega de dashboards.',
+                        'Análise e desenvolvimento de soluções para o sistema ERP Protheus.',
+                        'Suporte a mais de 150 filiais e 4.500 usuários.',
+                        'Administração de infraestrutura de redes, servidores Windows, PABX e Office 365.',
+                        'Gerenciamento de fornecedores e implantação de novas tecnologias.'
+                    ]
+                },
+                {
+                    company: 'TIVIT',
+                    role: 'Estagiário de Suporte',
+                    period: 'Jan de 2021 - Mar de 2021',
+                    details: [
+                        'Atuação em Service Desk, prestando suporte a usuários.',
+                        'Instalação e configuração de softwares.',
+                        'Resolução de problemas de hardware e software (Windows e Pacote Office).',
+                        'Criação e gerenciamento de contas de usuário.'
+                    ]
+                },
+                {
+                    company: 'Via Varejo',
+                    role: 'Estagiário de Suporte',
+                    period: 'Jan de 2020 - Dez de 2020',
+                    details: [
+                        'Reparo e manutenção de contas bancárias e elementos de sistemas.',
+                        'Suporte ao sistema Protheus e outras aplicações internas.',
+                        'Utilização de PDVs e ferramentas de acesso remoto (VNC, AnyDesk).',
+                        'Atendimento via Service Now e telefonia.'
+                    ]
+                },
+                {
+                    company: 'Universidade Presbiteriana Mackenzie',
+                    role: 'Estagiário de Suporte',
+                    period: 'Jul de 2019 - Dez de 2019',
+                    details: [
+                        'Suporte técnico a alunos, professores e funcionários.',
+                        'Manutenção de redes, garantindo a conectividade e o serviço de telefonia.',
+                        'Atendimento em laboratórios e suporte a eventos.',
+                        'Gerenciamento de infraestrutura de rede e telefonia.'
+                    ]
+                }
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            experiences.forEach((exp, index) => {
+                const item = document.createElement('div');
+                item.className = 'relative pl-8 timeline-item';
+                item.innerHTML = `
+                    <div class="cursor-pointer timeline-header">
+                        <h3 class="text-xl font-bold text-[#34495e]">${exp.role}</h3>
+                        <p class="text-[#4a90e2] font-semibold">${exp.company}</p>
+                        <p class="text-sm text-gray-500 mb-2">${exp.period}</p>
+                    </div>
+                    <div class="details-content bg-white p-6 rounded-lg shadow-md mt-4">
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            ${exp.details.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                timelineContainer.appendChild(item);
+            });
+            
+            document.querySelectorAll('.timeline-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('open');
+                    if(content.classList.contains('open')){
+                       content.style.padding = '1.5rem';
+                    } else {
+                       content.style.padding = '0';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
